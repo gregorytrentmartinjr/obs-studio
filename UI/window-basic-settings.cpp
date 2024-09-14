@@ -1334,8 +1334,8 @@ void OBSBasicSettings::LoadBranchesList()
 {
 #if defined(_WIN32) || defined(ENABLE_SPARKLE_UPDATER)
 	bool configBranchRemoved = true;
-	QString configBranch =
-		config_get_string(GetGlobalConfig(), "General", "UpdateBranch");
+	QString configBranch = config_get_string(App()->GetAppConfig(),
+						 "General", "UpdateBranch");
 
 	for (const UpdateBranch &branch : App()->GetBranches()) {
 		if (branch.name == configBranch)
@@ -1388,8 +1388,8 @@ void OBSBasicSettings::LoadGeneralSettings()
 	LoadLanguageList();
 
 #if defined(_WIN32) || defined(ENABLE_SPARKLE_UPDATER)
-	bool enableAutoUpdates = config_get_bool(GetGlobalConfig(), "General",
-						 "EnableAutoUpdates");
+	bool enableAutoUpdates = config_get_bool(
+		App()->GetUserConfig(), "General", "EnableAutoUpdates");
 	ui->enableAutoUpdates->setChecked(enableAutoUpdates);
 
 	LoadBranchesList();
@@ -1401,7 +1401,7 @@ void OBSBasicSettings::LoadGeneralSettings()
 #if defined(_WIN32)
 	if (ui->hideOBSFromCapture) {
 		bool hideWindowFromCapture =
-			config_get_bool(GetGlobalConfig(), "BasicWindow",
+			config_get_bool(App()->GetUserConfig(), "BasicWindow",
 					"HideOBSWindowsFromCapture");
 		ui->hideOBSFromCapture->setChecked(hideWindowFromCapture);
 
@@ -1416,133 +1416,140 @@ void OBSBasicSettings::LoadGeneralSettings()
 #endif
 
 	bool recordWhenStreaming = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "RecordWhenStreaming");
+		App()->GetUserConfig(), "BasicWindow", "RecordWhenStreaming");
 	ui->recordWhenStreaming->setChecked(recordWhenStreaming);
 
 	bool keepRecordStreamStops =
-		config_get_bool(GetGlobalConfig(), "BasicWindow",
+		config_get_bool(App()->GetUserConfig(), "BasicWindow",
 				"KeepRecordingWhenStreamStops");
 	ui->keepRecordStreamStops->setChecked(keepRecordStreamStops);
 
-	bool replayWhileStreaming = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "ReplayBufferWhileStreaming");
+	bool replayWhileStreaming =
+		config_get_bool(App()->GetUserConfig(), "BasicWindow",
+				"ReplayBufferWhileStreaming");
 	ui->replayWhileStreaming->setChecked(replayWhileStreaming);
 
 	bool keepReplayStreamStops =
-		config_get_bool(GetGlobalConfig(), "BasicWindow",
+		config_get_bool(App()->GetUserConfig(), "BasicWindow",
 				"KeepReplayBufferStreamStops");
 	ui->keepReplayStreamStops->setChecked(keepReplayStreamStops);
 
 	bool systemTrayEnabled = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "SysTrayEnabled");
+		App()->GetUserConfig(), "BasicWindow", "SysTrayEnabled");
 	ui->systemTrayEnabled->setChecked(systemTrayEnabled);
 
 	bool systemTrayWhenStarted = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "SysTrayWhenStarted");
+		App()->GetUserConfig(), "BasicWindow", "SysTrayWhenStarted");
 	ui->systemTrayWhenStarted->setChecked(systemTrayWhenStarted);
 
 	bool systemTrayAlways = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "SysTrayMinimizeToTray");
+		App()->GetUserConfig(), "BasicWindow", "SysTrayMinimizeToTray");
 	ui->systemTrayAlways->setChecked(systemTrayAlways);
 
-	bool saveProjectors = config_get_bool(GetGlobalConfig(), "BasicWindow",
-					      "SaveProjectors");
+	bool saveProjectors = config_get_bool(App()->GetUserConfig(),
+					      "BasicWindow", "SaveProjectors");
 	ui->saveProjectors->setChecked(saveProjectors);
 
-	bool closeProjectors = config_get_bool(GetGlobalConfig(), "BasicWindow",
+	bool closeProjectors = config_get_bool(App()->GetUserConfig(),
+					       "BasicWindow",
 					       "CloseExistingProjectors");
 	ui->closeProjectors->setChecked(closeProjectors);
 
-	bool snappingEnabled = config_get_bool(GetGlobalConfig(), "BasicWindow",
-					       "SnappingEnabled");
+	bool snappingEnabled = config_get_bool(
+		App()->GetUserConfig(), "BasicWindow", "SnappingEnabled");
 	ui->snappingEnabled->setChecked(snappingEnabled);
 
-	bool screenSnapping = config_get_bool(GetGlobalConfig(), "BasicWindow",
-					      "ScreenSnapping");
+	bool screenSnapping = config_get_bool(App()->GetUserConfig(),
+					      "BasicWindow", "ScreenSnapping");
 	ui->screenSnapping->setChecked(screenSnapping);
 
-	bool centerSnapping = config_get_bool(GetGlobalConfig(), "BasicWindow",
-					      "CenterSnapping");
+	bool centerSnapping = config_get_bool(App()->GetUserConfig(),
+					      "BasicWindow", "CenterSnapping");
 	ui->centerSnapping->setChecked(centerSnapping);
 
-	bool sourceSnapping = config_get_bool(GetGlobalConfig(), "BasicWindow",
-					      "SourceSnapping");
+	bool sourceSnapping = config_get_bool(App()->GetUserConfig(),
+					      "BasicWindow", "SourceSnapping");
 	ui->sourceSnapping->setChecked(sourceSnapping);
 
-	double snapDistance = config_get_double(GetGlobalConfig(),
+	double snapDistance = config_get_double(App()->GetUserConfig(),
 						"BasicWindow", "SnapDistance");
 	ui->snapDistance->setValue(snapDistance);
 
-	bool warnBeforeStreamStart = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "WarnBeforeStartingStream");
+	bool warnBeforeStreamStart =
+		config_get_bool(App()->GetUserConfig(), "BasicWindow",
+				"WarnBeforeStartingStream");
 	ui->warnBeforeStreamStart->setChecked(warnBeforeStreamStart);
 
 	bool spacingHelpersEnabled = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "SpacingHelpersEnabled");
+		App()->GetUserConfig(), "BasicWindow", "SpacingHelpersEnabled");
 	ui->previewSpacingHelpers->setChecked(spacingHelpersEnabled);
 
-	bool warnBeforeStreamStop = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "WarnBeforeStoppingStream");
+	bool warnBeforeStreamStop = config_get_bool(App()->GetUserConfig(),
+						    "BasicWindow",
+						    "WarnBeforeStoppingStream");
 	ui->warnBeforeStreamStop->setChecked(warnBeforeStreamStop);
 
-	bool warnBeforeRecordStop = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "WarnBeforeStoppingRecord");
+	bool warnBeforeRecordStop = config_get_bool(App()->GetUserConfig(),
+						    "BasicWindow",
+						    "WarnBeforeStoppingRecord");
 	ui->warnBeforeRecordStop->setChecked(warnBeforeRecordStop);
 
 	bool hideProjectorCursor = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "HideProjectorCursor");
+		App()->GetUserConfig(), "BasicWindow", "HideProjectorCursor");
 	ui->hideProjectorCursor->setChecked(hideProjectorCursor);
 
 	bool projectorAlwaysOnTop = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "ProjectorAlwaysOnTop");
+		App()->GetUserConfig(), "BasicWindow", "ProjectorAlwaysOnTop");
 	ui->projectorAlwaysOnTop->setChecked(projectorAlwaysOnTop);
 
 	bool windowFocusTogglePreview = config_get_bool(
 		GetGlobalConfig(), "BasicWindow", "WindowFocusTogglePreview");
 	ui->windowFocusTogglePreview->setChecked(windowFocusTogglePreview);
 
-	bool overflowHide = config_get_bool(GetGlobalConfig(), "BasicWindow",
-					    "OverflowHidden");
+	bool overflowHide = config_get_bool(App()->GetUserConfig(),
+					    "BasicWindow", "OverflowHidden");
 	ui->overflowHide->setChecked(overflowHide);
 
 	bool overflowAlwaysVisible = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "OverflowAlwaysVisible");
+		App()->GetUserConfig(), "BasicWindow", "OverflowAlwaysVisible");
 	ui->overflowAlwaysVisible->setChecked(overflowAlwaysVisible);
 
-	bool overflowSelectionHide = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "OverflowSelectionHidden");
+	bool overflowSelectionHide = config_get_bool(App()->GetUserConfig(),
+						     "BasicWindow",
+						     "OverflowSelectionHidden");
 	ui->overflowSelectionHide->setChecked(overflowSelectionHide);
 
-	bool safeAreas = config_get_bool(GetGlobalConfig(), "BasicWindow",
+	bool safeAreas = config_get_bool(App()->GetUserConfig(), "BasicWindow",
 					 "ShowSafeAreas");
 	ui->previewSafeAreas->setChecked(safeAreas);
 
-	bool automaticSearch = config_get_bool(GetGlobalConfig(), "General",
-					       "AutomaticCollectionSearch");
+	bool automaticSearch = config_get_bool(
+		App()->GetUserConfig(), "General", "AutomaticCollectionSearch");
 	ui->automaticSearch->setChecked(automaticSearch);
 
-	bool doubleClickSwitch = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "TransitionOnDoubleClick");
+	bool doubleClickSwitch = config_get_bool(App()->GetUserConfig(),
+						 "BasicWindow",
+						 "TransitionOnDoubleClick");
 	ui->doubleClickSwitch->setChecked(doubleClickSwitch);
 
 	bool studioPortraitLayout = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "StudioPortraitLayout");
+		App()->GetUserConfig(), "BasicWindow", "StudioPortraitLayout");
 	ui->studioPortraitLayout->setChecked(studioPortraitLayout);
 
-	bool prevProgLabels = config_get_bool(GetGlobalConfig(), "BasicWindow",
-					      "StudioModeLabels");
+	bool prevProgLabels = config_get_bool(
+		App()->GetUserConfig(), "BasicWindow", "StudioModeLabels");
 	ui->prevProgLabelToggle->setChecked(prevProgLabels);
 
 	bool multiviewMouseSwitch = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "MultiviewMouseSwitch");
+		App()->GetUserConfig(), "BasicWindow", "MultiviewMouseSwitch");
 	ui->multiviewMouseSwitch->setChecked(multiviewMouseSwitch);
 
 	bool multiviewDrawNames = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "MultiviewDrawNames");
+		App()->GetUserConfig(), "BasicWindow", "MultiviewDrawNames");
 	ui->multiviewDrawNames->setChecked(multiviewDrawNames);
 
 	bool multiviewDrawAreas = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "MultiviewDrawAreas");
+		App()->GetUserConfig(), "BasicWindow", "MultiviewDrawAreas");
 	ui->multiviewDrawAreas->setChecked(multiviewDrawAreas);
 
 	ui->multiviewLayout->addItem(
@@ -1576,9 +1583,10 @@ void OBSBasicSettings::LoadGeneralSettings()
 		QTStr("Basic.Settings.General.MultiviewLayout.25Scene"),
 		static_cast<int>(MultiviewLayout::SCENES_ONLY_25_SCENES));
 
-	ui->multiviewLayout->setCurrentIndex(ui->multiviewLayout->findData(
-		QVariant::fromValue(config_get_int(
-			GetGlobalConfig(), "BasicWindow", "MultiviewLayout"))));
+	ui->multiviewLayout->setCurrentIndex(
+		ui->multiviewLayout->findData(QVariant::fromValue(
+			config_get_int(App()->GetUserConfig(), "BasicWindow",
+				       "MultiviewLayout"))));
 
 	prevLangIndex = ui->language->currentIndex();
 
@@ -1592,7 +1600,7 @@ void OBSBasicSettings::LoadRendererList()
 {
 #ifdef _WIN32
 	const char *renderer =
-		config_get_string(GetGlobalConfig(), "Video", "Renderer");
+		config_get_string(App()->GetUserConfig(), "Video", "Renderer");
 
 	ui->renderer->addItem(QT_UTF8("Direct3D 11"));
 	if (opt_allow_opengl || strcmp(renderer, "OpenGL") == 0)
@@ -2797,7 +2805,7 @@ void OBSBasicSettings::LoadAudioSettings()
 	uint32_t peakMeterTypeIdx =
 		config_get_uint(main->Config(), "Audio", "PeakMeterType");
 	bool enableLLAudioBuffering = config_get_bool(
-		GetGlobalConfig(), "Audio", "LowLatencyAudioBuffering");
+		App()->GetUserConfig(), "Audio", "LowLatencyAudioBuffering");
 
 	loading = true;
 
@@ -2923,13 +2931,13 @@ void OBSBasicSettings::LoadAdvancedSettings()
 	int rbSize = config_get_int(main->Config(), "AdvOut", "RecRBSize");
 	bool autoRemux = config_get_bool(main->Config(), "Video", "AutoRemux");
 	const char *hotkeyFocusType = config_get_string(
-		App()->GlobalConfig(), "General", "HotkeyFocusType");
+		App()->GetUserConfig(), "General", "HotkeyFocusType");
 	bool dynBitrate =
 		config_get_bool(main->Config(), "Output", "DynamicBitrate");
 	const char *ipFamily =
 		config_get_string(main->Config(), "Output", "IPFamily");
-	bool confirmOnExit =
-		config_get_bool(GetGlobalConfig(), "General", "ConfirmOnExit");
+	bool confirmOnExit = config_get_bool(App()->GetUserConfig(), "General",
+					     "ConfirmOnExit");
 
 	loading = true;
 
@@ -2976,20 +2984,20 @@ void OBSBasicSettings::LoadAdvancedSettings()
 	}
 
 #ifdef __APPLE__
-	bool disableOSXVSync = config_get_bool(App()->GlobalConfig(), "Video",
+	bool disableOSXVSync = config_get_bool(App()->GetUserConfig(), "Video",
 					       "DisableOSXVSync");
-	bool resetOSXVSync = config_get_bool(App()->GlobalConfig(), "Video",
+	bool resetOSXVSync = config_get_bool(App()->GetUserConfig(), "Video",
 					     "ResetOSXVSyncOnExit");
 	ui->disableOSXVSync->setChecked(disableOSXVSync);
 	ui->resetOSXVSync->setChecked(resetOSXVSync);
 	ui->resetOSXVSync->setEnabled(disableOSXVSync);
 #elif _WIN32
 	bool disableAudioDucking = config_get_bool(
-		App()->GlobalConfig(), "Audio", "DisableAudioDucking");
+		App()->GetUserConfig(), "Audio", "DisableAudioDucking");
 	ui->disableAudioDucking->setChecked(disableAudioDucking);
 
 	const char *processPriority = config_get_string(
-		App()->GlobalConfig(), "General", "ProcessPriority");
+		App()->GetAppConfig(), "General", "ProcessPriority");
 	bool enableNewSocketLoop = config_get_bool(main->Config(), "Output",
 						   "NewSocketLoopEnable");
 	bool enableLowLatencyMode =
@@ -3006,7 +3014,7 @@ void OBSBasicSettings::LoadAdvancedSettings()
 		QTStr("Basic.Settings.Advanced.Network.TCPPacing.Tooltip"));
 #endif
 #if defined(_WIN32) || defined(__APPLE__)
-	bool browserHWAccel = config_get_bool(App()->GlobalConfig(), "General",
+	bool browserHWAccel = config_get_bool(App()->GetUserConfig(), "General",
 					      "BrowserHWAccel");
 	ui->browserHWAccel->setChecked(browserHWAccel);
 	prevBrowserAccel = ui->browserHWAccel->isChecked();
@@ -3365,12 +3373,12 @@ void OBSBasicSettings::SaveGeneralSettings()
 	string language = langData.toString().toStdString();
 
 	if (WidgetChanged(ui->language))
-		config_set_string(GetGlobalConfig(), "General", "Language",
+		config_set_string(App()->GetUserConfig(), "General", "Language",
 				  language.c_str());
 
 #if defined(_WIN32) || defined(ENABLE_SPARKLE_UPDATER)
 	if (WidgetChanged(ui->enableAutoUpdates))
-		config_set_bool(GetGlobalConfig(), "General",
+		config_set_bool(App()->GetUserConfig(), "General",
 				"EnableAutoUpdates",
 				ui->enableAutoUpdates->isChecked());
 	int branchIdx = ui->updateChannelBox->currentIndex();
@@ -3378,15 +3386,15 @@ void OBSBasicSettings::SaveGeneralSettings()
 		ui->updateChannelBox->itemData(branchIdx).toString();
 
 	if (WidgetChanged(ui->updateChannelBox)) {
-		config_set_string(GetGlobalConfig(), "General", "UpdateBranch",
-				  QT_TO_UTF8(branchName));
+		config_set_string(App()->GetAppConfig(), "General",
+				  "UpdateBranch", QT_TO_UTF8(branchName));
 		forceUpdateCheck = true;
 	}
 #endif
 #ifdef _WIN32
 	if (ui->hideOBSFromCapture && WidgetChanged(ui->hideOBSFromCapture)) {
 		bool hide_window = ui->hideOBSFromCapture->isChecked();
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"HideOBSWindowsFromCapture", hide_window);
 
 		QWindowList windows = QGuiApplication::allWindows();
@@ -3404,34 +3412,34 @@ void OBSBasicSettings::SaveGeneralSettings()
 		config_set_bool(main->Config(), "General", "OpenStatsOnStartup",
 				ui->openStatsOnStartup->isChecked());
 	if (WidgetChanged(ui->snappingEnabled))
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"SnappingEnabled",
 				ui->snappingEnabled->isChecked());
 	if (WidgetChanged(ui->screenSnapping))
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"ScreenSnapping",
 				ui->screenSnapping->isChecked());
 	if (WidgetChanged(ui->centerSnapping))
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"CenterSnapping",
 				ui->centerSnapping->isChecked());
 	if (WidgetChanged(ui->sourceSnapping))
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"SourceSnapping",
 				ui->sourceSnapping->isChecked());
 	if (WidgetChanged(ui->snapDistance))
-		config_set_double(GetGlobalConfig(), "BasicWindow",
+		config_set_double(App()->GetUserConfig(), "BasicWindow",
 				  "SnapDistance", ui->snapDistance->value());
 	if (WidgetChanged(ui->overflowAlwaysVisible) ||
 	    WidgetChanged(ui->overflowHide) ||
 	    WidgetChanged(ui->overflowSelectionHide)) {
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"OverflowAlwaysVisible",
 				ui->overflowAlwaysVisible->isChecked());
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"OverflowHidden",
 				ui->overflowHide->isChecked());
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"OverflowSelectionHidden",
 				ui->overflowSelectionHide->isChecked());
 		main->UpdatePreviewOverflowSettings();
@@ -3442,47 +3450,47 @@ void OBSBasicSettings::SaveGeneralSettings()
 				ui->windowFocusTogglePreview->isChecked());
 	}
 	if (WidgetChanged(ui->previewSafeAreas)) {
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"ShowSafeAreas",
 				ui->previewSafeAreas->isChecked());
 		main->UpdatePreviewSafeAreas();
 	}
 
 	if (WidgetChanged(ui->previewSpacingHelpers)) {
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"SpacingHelpersEnabled",
 				ui->previewSpacingHelpers->isChecked());
 		main->UpdatePreviewSpacingHelpers();
 	}
 
 	if (WidgetChanged(ui->doubleClickSwitch))
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"TransitionOnDoubleClick",
 				ui->doubleClickSwitch->isChecked());
 	if (WidgetChanged(ui->automaticSearch))
-		config_set_bool(GetGlobalConfig(), "General",
+		config_set_bool(App()->GetUserConfig(), "General",
 				"AutomaticCollectionSearch",
 				ui->automaticSearch->isChecked());
 
-	config_set_bool(GetGlobalConfig(), "BasicWindow",
+	config_set_bool(App()->GetUserConfig(), "BasicWindow",
 			"WarnBeforeStartingStream",
 			ui->warnBeforeStreamStart->isChecked());
-	config_set_bool(GetGlobalConfig(), "BasicWindow",
+	config_set_bool(App()->GetUserConfig(), "BasicWindow",
 			"WarnBeforeStoppingStream",
 			ui->warnBeforeStreamStop->isChecked());
-	config_set_bool(GetGlobalConfig(), "BasicWindow",
+	config_set_bool(App()->GetUserConfig(), "BasicWindow",
 			"WarnBeforeStoppingRecord",
 			ui->warnBeforeRecordStop->isChecked());
 
 	if (WidgetChanged(ui->hideProjectorCursor)) {
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"HideProjectorCursor",
 				ui->hideProjectorCursor->isChecked());
 		main->UpdateProjectorHideCursor();
 	}
 
 	if (WidgetChanged(ui->projectorAlwaysOnTop)) {
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"ProjectorAlwaysOnTop",
 				ui->projectorAlwaysOnTop->isChecked());
 #if defined(_WIN32) || defined(__APPLE__)
@@ -3494,25 +3502,25 @@ void OBSBasicSettings::SaveGeneralSettings()
 	}
 
 	if (WidgetChanged(ui->recordWhenStreaming))
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"RecordWhenStreaming",
 				ui->recordWhenStreaming->isChecked());
 	if (WidgetChanged(ui->keepRecordStreamStops))
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"KeepRecordingWhenStreamStops",
 				ui->keepRecordStreamStops->isChecked());
 
 	if (WidgetChanged(ui->replayWhileStreaming))
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"ReplayBufferWhileStreaming",
 				ui->replayWhileStreaming->isChecked());
 	if (WidgetChanged(ui->keepReplayStreamStops))
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"KeepReplayBufferStreamStops",
 				ui->keepReplayStreamStops->isChecked());
 
 	if (WidgetChanged(ui->systemTrayEnabled)) {
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"SysTrayEnabled",
 				ui->systemTrayEnabled->isChecked());
 
@@ -3520,27 +3528,27 @@ void OBSBasicSettings::SaveGeneralSettings()
 	}
 
 	if (WidgetChanged(ui->systemTrayWhenStarted))
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"SysTrayWhenStarted",
 				ui->systemTrayWhenStarted->isChecked());
 
 	if (WidgetChanged(ui->systemTrayAlways))
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"SysTrayMinimizeToTray",
 				ui->systemTrayAlways->isChecked());
 
 	if (WidgetChanged(ui->saveProjectors))
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"SaveProjectors",
 				ui->saveProjectors->isChecked());
 
 	if (WidgetChanged(ui->closeProjectors))
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"CloseExistingProjectors",
 				ui->closeProjectors->isChecked());
 
 	if (WidgetChanged(ui->studioPortraitLayout)) {
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"StudioPortraitLayout",
 				ui->studioPortraitLayout->isChecked());
 
@@ -3548,7 +3556,7 @@ void OBSBasicSettings::SaveGeneralSettings()
 	}
 
 	if (WidgetChanged(ui->prevProgLabelToggle)) {
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"StudioModeLabels",
 				ui->prevProgLabelToggle->isChecked());
 
@@ -3557,28 +3565,28 @@ void OBSBasicSettings::SaveGeneralSettings()
 
 	bool multiviewChanged = false;
 	if (WidgetChanged(ui->multiviewMouseSwitch)) {
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"MultiviewMouseSwitch",
 				ui->multiviewMouseSwitch->isChecked());
 		multiviewChanged = true;
 	}
 
 	if (WidgetChanged(ui->multiviewDrawNames)) {
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"MultiviewDrawNames",
 				ui->multiviewDrawNames->isChecked());
 		multiviewChanged = true;
 	}
 
 	if (WidgetChanged(ui->multiviewDrawAreas)) {
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"MultiviewDrawAreas",
 				ui->multiviewDrawAreas->isChecked());
 		multiviewChanged = true;
 	}
 
 	if (WidgetChanged(ui->multiviewLayout)) {
-		config_set_int(GetGlobalConfig(), "BasicWindow",
+		config_set_int(App()->GetUserConfig(), "BasicWindow",
 			       "MultiviewLayout",
 			       ui->multiviewLayout->currentData().toInt());
 		multiviewChanged = true;
@@ -3626,12 +3634,12 @@ void OBSBasicSettings::SaveAdvancedSettings()
 
 #ifdef _WIN32
 	if (WidgetChanged(ui->renderer))
-		config_set_string(App()->GlobalConfig(), "Video", "Renderer",
+		config_set_string(App()->GetUserConfig(), "Video", "Renderer",
 				  QT_TO_UTF8(ui->renderer->currentText()));
 
 	std::string priority =
 		QT_TO_UTF8(ui->processPriority->currentData().toString());
-	config_set_string(App()->GlobalConfig(), "General", "ProcessPriority",
+	config_set_string(App()->GetAppConfig(), "General", "ProcessPriority",
 			  priority.c_str());
 	if (main->Active())
 		SetProcessPriority(priority.c_str());
@@ -3641,25 +3649,25 @@ void OBSBasicSettings::SaveAdvancedSettings()
 #endif
 #if defined(_WIN32) || defined(__APPLE__)
 	bool browserHWAccel = ui->browserHWAccel->isChecked();
-	config_set_bool(App()->GlobalConfig(), "General", "BrowserHWAccel",
+	config_set_bool(App()->GetUserConfig(), "General", "BrowserHWAccel",
 			browserHWAccel);
 #endif
 
 	if (WidgetChanged(ui->hotkeyFocusType)) {
 		QString str = GetComboData(ui->hotkeyFocusType);
-		config_set_string(App()->GlobalConfig(), "General",
+		config_set_string(App()->GetUserConfig(), "General",
 				  "HotkeyFocusType", QT_TO_UTF8(str));
 	}
 
 #ifdef __APPLE__
 	if (WidgetChanged(ui->disableOSXVSync)) {
 		bool disable = ui->disableOSXVSync->isChecked();
-		config_set_bool(App()->GlobalConfig(), "Video",
+		config_set_bool(App()->GetUserConfig(), "Video",
 				"DisableOSXVSync", disable);
 		EnableOSXVSync(!disable);
 	}
 	if (WidgetChanged(ui->resetOSXVSync))
-		config_set_bool(App()->GlobalConfig(), "Video",
+		config_set_bool(App()->GetUserConfig(), "Video",
 				"ResetOSXVSyncOnExit",
 				ui->resetOSXVSync->isChecked());
 #endif
@@ -3679,14 +3687,15 @@ void OBSBasicSettings::SaveAdvancedSettings()
 #ifdef _WIN32
 	if (WidgetChanged(ui->disableAudioDucking)) {
 		bool disable = ui->disableAudioDucking->isChecked();
-		config_set_bool(App()->GlobalConfig(), "Audio",
+		config_set_bool(App()->GetUserConfig(), "Audio",
 				"DisableAudioDucking", disable);
 		DisableAudioDucking(disable);
 	}
 #endif
 
 	if (WidgetChanged(ui->confirmOnExit))
-		config_set_bool(GetGlobalConfig(), "General", "ConfirmOnExit",
+		config_set_bool(App()->GetUserConfig(), "General",
+				"ConfirmOnExit",
 				ui->confirmOnExit->isChecked());
 
 	SaveEdit(ui->filenameFormatting, "Output", "FilenameFormatting");
@@ -4059,7 +4068,7 @@ void OBSBasicSettings::SaveAudioSettings()
 	if (WidgetChanged(ui->lowLatencyBuffering)) {
 		bool enableLLAudioBuffering =
 			ui->lowLatencyBuffering->isChecked();
-		config_set_bool(GetGlobalConfig(), "Audio",
+		config_set_bool(App()->GetUserConfig(), "Audio",
 				"LowLatencyAudioBuffering",
 				enableLLAudioBuffering);
 	}
@@ -4169,7 +4178,7 @@ void OBSBasicSettings::SaveSettings()
 		main->ResetVideo();
 
 	config_save_safe(main->Config(), "tmp", nullptr);
-	config_save_safe(GetGlobalConfig(), "tmp", nullptr);
+	config_save_safe(App()->GetUserConfig(), "tmp", nullptr);
 	main->SaveProject();
 
 	if (Changed()) {
@@ -4798,7 +4807,7 @@ void OBSBasicSettings::HideOBSWindowWarning(int state)
 	if (loading || state == Qt::Unchecked)
 		return;
 
-	if (config_get_bool(GetGlobalConfig(), "General",
+	if (config_get_bool(App()->GetUserConfig(), "General",
 			    "WarnedAboutHideOBSFromCapture"))
 		return;
 
@@ -4806,9 +4815,9 @@ void OBSBasicSettings::HideOBSWindowWarning(int state)
 		this, QTStr("Basic.Settings.General.HideOBSWindowsFromCapture"),
 		QTStr("Basic.Settings.General.HideOBSWindowsFromCapture.Message"));
 
-	config_set_bool(GetGlobalConfig(), "General",
+	config_set_bool(App()->GetUserConfig(), "General",
 			"WarnedAboutHideOBSFromCapture", true);
-	config_save_safe(GetGlobalConfig(), "tmp", nullptr);
+	config_save_safe(App()->GetUserConfig(), "tmp", nullptr);
 }
 
 /*

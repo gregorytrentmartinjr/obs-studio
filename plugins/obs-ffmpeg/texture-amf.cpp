@@ -1494,8 +1494,9 @@ static bool amf_avc_init(void *data, obs_data_t *settings)
 	set_avc_property(enc, RATE_CONTROL_METHOD, rc);
 	if (rc != AMF_VIDEO_ENCODER_RATE_CONTROL_METHOD_CONSTANT_QP &&
 	    rc != AMF_VIDEO_ENCODER_RATE_CONTROL_METHOD_HIGH_QUALITY_VBR &&
-	    rc != AMF_VIDEO_ENCODER_RATE_CONTROL_METHOD_HIGH_QUALITY_CBR)
+	    rc != AMF_VIDEO_ENCODER_RATE_CONTROL_METHOD_HIGH_QUALITY_CBR) {
 		set_avc_property(enc, ENABLE_VBAQ, true);
+	}
 
 	amf_avc_update_data(enc, rc, bitrate * 1000, qp);
 
@@ -1861,8 +1862,9 @@ static bool amf_hevc_init(void *data, obs_data_t *settings)
 	set_hevc_property(enc, RATE_CONTROL_METHOD, rc);
 	if (rc != AMF_VIDEO_ENCODER_HEVC_RATE_CONTROL_METHOD_CONSTANT_QP &&
 	    rc != AMF_VIDEO_ENCODER_HEVC_RATE_CONTROL_METHOD_HIGH_QUALITY_VBR &&
-	    rc != AMF_VIDEO_ENCODER_HEVC_RATE_CONTROL_METHOD_HIGH_QUALITY_CBR)
+	    rc != AMF_VIDEO_ENCODER_HEVC_RATE_CONTROL_METHOD_HIGH_QUALITY_CBR) {
 		set_hevc_property(enc, ENABLE_VBAQ, true);
+	}
 
 	amf_hevc_update_data(enc, rc, bitrate * 1000, qp);
 

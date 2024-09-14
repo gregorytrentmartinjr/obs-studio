@@ -1503,7 +1503,7 @@ void OBSBasicSettings::LoadGeneralSettings()
 	ui->projectorAlwaysOnTop->setChecked(projectorAlwaysOnTop);
 
 	bool windowFocusTogglePreview = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "WindowFocusTogglePreview");
+		App()->GetUserConfig(), "BasicWindow", "WindowFocusTogglePreview");
 	ui->windowFocusTogglePreview->setChecked(windowFocusTogglePreview);
 
 	bool overflowHide = config_get_bool(App()->GetUserConfig(),
@@ -3449,7 +3449,7 @@ void OBSBasicSettings::SaveGeneralSettings()
 		main->UpdatePreviewOverflowSettings();
 	}
 	if (WidgetChanged(ui->windowFocusTogglePreview)) {
-		config_set_bool(GetGlobalConfig(), "BasicWindow",
+		config_set_bool(App()->GetUserConfig(), "BasicWindow",
 				"WindowFocusTogglePreview",
 				ui->windowFocusTogglePreview->isChecked());
 	}

@@ -9389,7 +9389,7 @@ void OBSBasic::TogglePreview()
 void OBSBasic::TogglePreviewForWindowFocus(bool hasFocus)
 {
 	bool enablePreviewToggle = config_get_bool(
-		GetGlobalConfig(), "BasicWindow", "WindowFocusTogglePreview");
+		App()->GetUserConfig(), "BasicWindow", "WindowFocusTogglePreview");
 
 	if (!hasFocus) {
 		previewEnabledWhileFocused = previewEnabled;

@@ -437,7 +437,7 @@ OBSImporter::OBSImporter(QWidget *parent)
 
 	ImportersInit();
 
-	bool autoSearchPrompt = config_get_bool(App()->GetUserConfig(),
+	bool autoSearchPrompt = config_get_bool(App()->GlobalConfig(),
 						"General", "AutoSearchPrompt");
 
 	if (!autoSearchPrompt) {
@@ -446,18 +446,18 @@ OBSImporter::OBSImporter(QWidget *parent)
 			QTStr("Importer.AutomaticCollectionText"));
 
 		if (button == QMessageBox::Yes) {
-			config_set_bool(App()->GetUserConfig(), "General",
+			config_set_bool(App()->GlobalConfig(), "General",
 					"AutomaticCollectionSearch", true);
 		} else {
-			config_set_bool(App()->GetUserConfig(), "General",
+			config_set_bool(App()->GlobalConfig(), "General",
 					"AutomaticCollectionSearch", false);
 		}
 
-		config_set_bool(App()->GetUserConfig(), "General",
+		config_set_bool(App()->GlobalConfig(), "General",
 				"AutoSearchPrompt", true);
 	}
 
-	bool autoSearch = config_get_bool(App()->GetUserConfig(), "General",
+	bool autoSearch = config_get_bool(App()->GlobalConfig(), "General",
 					  "AutomaticCollectionSearch");
 
 	OBSImporterFiles f;

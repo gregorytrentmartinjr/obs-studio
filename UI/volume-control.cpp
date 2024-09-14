@@ -61,10 +61,9 @@ static void ShowUnassignedWarning(const char *name)
 		msgbox.exec();
 
 		if (cb->isChecked()) {
-			config_set_bool(App()->GetUserConfig(), "General",
+			config_set_bool(App()->GlobalConfig(), "General",
 					"WarnedAboutUnassignedSources", true);
-			config_save_safe(App()->GetUserConfig(), "tmp",
-					 nullptr);
+			config_save_safe(App()->GlobalConfig(), "tmp", nullptr);
 		}
 	};
 
@@ -151,7 +150,7 @@ void VolControl::SetMuted(bool)
 		mute->setCheckState(Qt::PartiallyChecked);
 		/* Show notice about the source no being assigned to any tracks */
 		bool has_shown_warning =
-			config_get_bool(App()->GetUserConfig(), "General",
+			config_get_bool(App()->GlobalConfig(), "General",
 					"WarnedAboutUnassignedSources");
 		if (!has_shown_warning)
 			ShowUnassignedWarning(obs_source_get_name(source));
@@ -460,10 +459,10 @@ void VolumeMeter::setBackgroundNominalColor(QColor c)
 {
 	p_backgroundNominalColor = std::move(c);
 
-	if (config_get_bool(App()->GetUserConfig(), "Accessibility",
+	if (config_get_bool(GetGlobalConfig(), "Accessibility",
 			    "OverrideColors")) {
 		backgroundNominalColor = color_from_int(config_get_int(
-			App()->GetUserConfig(), "Accessibility", "MixerGreen"));
+			GetGlobalConfig(), "Accessibility", "MixerGreen"));
 	} else {
 		backgroundNominalColor = p_backgroundNominalColor;
 	}
@@ -488,11 +487,10 @@ void VolumeMeter::setBackgroundWarningColor(QColor c)
 {
 	p_backgroundWarningColor = std::move(c);
 
-	if (config_get_bool(App()->GetUserConfig(), "Accessibility",
+	if (config_get_bool(GetGlobalConfig(), "Accessibility",
 			    "OverrideColors")) {
-		backgroundWarningColor = color_from_int(
-			config_get_int(App()->GetUserConfig(), "Accessibility",
-				       "MixerYellow"));
+		backgroundWarningColor = color_from_int(config_get_int(
+			GetGlobalConfig(), "Accessibility", "MixerYellow"));
 	} else {
 		backgroundWarningColor = p_backgroundWarningColor;
 	}
@@ -517,10 +515,10 @@ void VolumeMeter::setBackgroundErrorColor(QColor c)
 {
 	p_backgroundErrorColor = std::move(c);
 
-	if (config_get_bool(App()->GetUserConfig(), "Accessibility",
+	if (config_get_bool(GetGlobalConfig(), "Accessibility",
 			    "OverrideColors")) {
 		backgroundErrorColor = color_from_int(config_get_int(
-			App()->GetUserConfig(), "Accessibility", "MixerRed"));
+			GetGlobalConfig(), "Accessibility", "MixerRed"));
 	} else {
 		backgroundErrorColor = p_backgroundErrorColor;
 	}
@@ -545,10 +543,10 @@ void VolumeMeter::setForegroundNominalColor(QColor c)
 {
 	p_foregroundNominalColor = std::move(c);
 
-	if (config_get_bool(App()->GetUserConfig(), "Accessibility",
+	if (config_get_bool(GetGlobalConfig(), "Accessibility",
 			    "OverrideColors")) {
 		foregroundNominalColor = color_from_int(
-			config_get_int(App()->GetUserConfig(), "Accessibility",
+			config_get_int(GetGlobalConfig(), "Accessibility",
 				       "MixerGreenActive"));
 	} else {
 		foregroundNominalColor = p_foregroundNominalColor;
@@ -574,10 +572,10 @@ void VolumeMeter::setForegroundWarningColor(QColor c)
 {
 	p_foregroundWarningColor = std::move(c);
 
-	if (config_get_bool(App()->GetUserConfig(), "Accessibility",
+	if (config_get_bool(GetGlobalConfig(), "Accessibility",
 			    "OverrideColors")) {
 		foregroundWarningColor = color_from_int(
-			config_get_int(App()->GetUserConfig(), "Accessibility",
+			config_get_int(GetGlobalConfig(), "Accessibility",
 				       "MixerYellowActive"));
 	} else {
 		foregroundWarningColor = p_foregroundWarningColor;
@@ -603,11 +601,10 @@ void VolumeMeter::setForegroundErrorColor(QColor c)
 {
 	p_foregroundErrorColor = std::move(c);
 
-	if (config_get_bool(App()->GetUserConfig(), "Accessibility",
+	if (config_get_bool(GetGlobalConfig(), "Accessibility",
 			    "OverrideColors")) {
-		foregroundErrorColor = color_from_int(
-			config_get_int(App()->GetUserConfig(), "Accessibility",
-				       "MixerRedActive"));
+		foregroundErrorColor = color_from_int(config_get_int(
+			GetGlobalConfig(), "Accessibility", "MixerRedActive"));
 	} else {
 		foregroundErrorColor = p_foregroundErrorColor;
 	}

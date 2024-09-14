@@ -28,7 +28,7 @@ OBSProjector::OBSProjector(QWidget *widget, obs_source_t *source_, int monitor,
 				  "destroy", OBSSourceDestroyed, this);
 	}
 
-	isAlwaysOnTop = config_get_bool(App()->GetUserConfig(), "BasicWindow",
+	isAlwaysOnTop = config_get_bool(GetGlobalConfig(), "BasicWindow",
 					"ProjectorAlwaysOnTop");
 
 	if (isAlwaysOnTop)
@@ -144,7 +144,7 @@ void OBSProjector::SetHideCursor()
 	if (savedMonitor == -1)
 		return;
 
-	bool hideCursor = config_get_bool(App()->GetUserConfig(), "BasicWindow",
+	bool hideCursor = config_get_bool(GetGlobalConfig(), "BasicWindow",
 					  "HideProjectorCursor");
 
 	if (hideCursor && type != ProjectorType::Multiview)
@@ -331,21 +331,20 @@ void OBSProjector::EscapeTriggered()
 void OBSProjector::UpdateMultiview()
 {
 	MultiviewLayout multiviewLayout = static_cast<MultiviewLayout>(
-		config_get_int(App()->GetUserConfig(), "BasicWindow",
+		config_get_int(GetGlobalConfig(), "BasicWindow",
 			       "MultiviewLayout"));
 
-	bool drawLabel = config_get_bool(App()->GetUserConfig(), "BasicWindow",
+	bool drawLabel = config_get_bool(GetGlobalConfig(), "BasicWindow",
 					 "MultiviewDrawNames");
 
-	bool drawSafeArea = config_get_bool(
-		App()->GetUserConfig(), "BasicWindow", "MultiviewDrawAreas");
+	bool drawSafeArea = config_get_bool(GetGlobalConfig(), "BasicWindow",
+					    "MultiviewDrawAreas");
 
-	mouseSwitching = config_get_bool(App()->GetUserConfig(), "BasicWindow",
+	mouseSwitching = config_get_bool(GetGlobalConfig(), "BasicWindow",
 					 "MultiviewMouseSwitch");
 
-	transitionOnDoubleClick = config_get_bool(App()->GetUserConfig(),
-						  "BasicWindow",
-						  "TransitionOnDoubleClick");
+	transitionOnDoubleClick = config_get_bool(
+		GetGlobalConfig(), "BasicWindow", "TransitionOnDoubleClick");
 
 	multiview->Update(multiviewLayout, drawLabel, drawSafeArea);
 }

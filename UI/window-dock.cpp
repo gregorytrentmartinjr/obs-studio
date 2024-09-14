@@ -20,14 +20,13 @@ void OBSDock::closeEvent(QCloseEvent *event)
 		msgbox.exec();
 
 		if (cb->isChecked()) {
-			config_set_bool(App()->GetUserConfig(), "General",
+			config_set_bool(App()->GlobalConfig(), "General",
 					"WarnedAboutClosingDocks", true);
-			config_save_safe(App()->GetUserConfig(), "tmp",
-					 nullptr);
+			config_save_safe(App()->GlobalConfig(), "tmp", nullptr);
 		}
 	};
 
-	bool warned = config_get_bool(App()->GetUserConfig(), "General",
+	bool warned = config_get_bool(App()->GlobalConfig(), "General",
 				      "WarnedAboutClosingDocks");
 	if (!OBSBasic::Get()->Closing() && !warned) {
 		QMetaObject::invokeMethod(App(), "Exec", Qt::QueuedConnection,

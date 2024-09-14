@@ -107,7 +107,7 @@ void OBSBasicSettings::LoadAppearanceSettings(bool reload)
 
 void OBSBasicSettings::SaveAppearanceSettings()
 {
-	config_t *config = App()->GetUserConfig();
+	config_t *config = GetGlobalConfig();
 
 	OBSTheme *currentTheme = App()->GetTheme();
 	if (savedTheme != currentTheme) {

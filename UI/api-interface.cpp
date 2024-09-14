@@ -16,6 +16,8 @@ template<typename T> static T GetOBSRef(QListWidgetItem *item)
 	return item->data(static_cast<int>(QtDataRole::OBSRef)).value<T>();
 }
 
+void EnumSceneCollections(function<bool(const char *, const char *)> &&cb);
+
 extern volatile bool streaming_active;
 extern volatile bool recording_active;
 extern volatile bool recording_paused;
@@ -166,17 +168,19 @@ struct OBSStudioAPI : obs_frontend_callbacks {
 	void obs_frontend_get_scene_collections(
 		std::vector<std::string> &strings) override
 	{
-		for (auto &[collectionName, collection] :
-		     main->GetSceneCollectionCache()) {
-			strings.emplace_back(collectionName);
-		}
+		auto addCollection = [&](const char *name, const char *) {
+			strings.emplace_back(name);
+			return true;
+		};
+
+		EnumSceneCollections(addCollection);
 	}
 
 	char *obs_frontend_get_current_scene_collection(void) override
 	{
-		const OBSSceneCollection &currentCollection =
-			main->GetCurrentSceneCollection();
-		return bstrdup(currentCollection.name.c_str());
+		const char *cur_name = config_get_string(
+			App()->GlobalConfig(), "Basic", "SceneCollection");
+		return bstrdup(cur_name);
 	}
 
 	void obs_frontend_set_current_scene_collection(
@@ -202,9 +206,10 @@ struct OBSStudioAPI : obs_frontend_callbacks {
 	bool obs_frontend_add_scene_collection(const char *name) override
 	{
 		bool success = false;
-		QMetaObject::invokeMethod(main, "NewSceneCollection",
+		QMetaObject::invokeMethod(main, "AddSceneCollection",
 					  WaitConnection(),
 					  Q_RETURN_ARG(bool, success),
+					  Q_ARG(bool, true),
 					  Q_ARG(QString, QT_UTF8(name)));
 		return success;
 	}

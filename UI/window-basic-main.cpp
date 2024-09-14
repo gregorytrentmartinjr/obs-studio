@@ -2332,12 +2332,28 @@ void OBSBasic::OBSInit()
 {
 	ProfileScope("OBSBasic::OBSInit");
 
+	const char *sceneCollection = config_get_string(
+		App()->GlobalConfig(), "Basic", "SceneCollectionFile");
+	char savePath[1024];
+	char fileName[1024];
+	int ret;
+
+	if (!sceneCollection)
+		throw "Failed to get scene collection name";
+
+	ret = snprintf(fileName, sizeof(fileName),
+		       "obs-studio/basic/scenes/%s.json", sceneCollection);
+	if (ret <= 0)
+		throw "Failed to create scene collection file name";
+
+	ret = GetConfigPath(savePath, sizeof(savePath), fileName);
+	if (ret <= 0)
+		throw "Failed to get scene collection json file path";
+
 	if (!InitBasicConfig())
 		throw "Failed to load basic.ini";
 	if (!ResetAudio())
 		throw "Failed to initialize audio";
-
-	int ret = 0;
 
 	ret = ResetVideo();
 
@@ -2384,12 +2400,6 @@ void OBSBasic::OBSInit()
 	} else {
 		AddExtraModulePaths();
 	}
-
-	/* Modules can access frontend information (i.e. profile and scene collection data) during their initialization, and some modules (e.g. obs-websockets) are known to use the filesystem location of the current profile in their own code.
-     
-     Thus the profile and scene collection discovery needs to happen before any access to that information (but after intializing global settings) to ensure legacy code gets valid path information.
-     */
-	RefreshSceneCollections(true);
 
 	blog(LOG_INFO, "---------------------------------");
 	obs_load_all_modules2(&mfi);
@@ -2472,19 +2482,7 @@ void OBSBasic::OBSInit()
 	{
 		ProfileScope("OBSBasic::Load");
 		disableSaving--;
-
-		try {
-			const OBSSceneCollection &currentCollection =
-				GetCurrentSceneCollection();
-			ActivateSceneCollection(currentCollection);
-		} catch (const std::invalid_argument &) {
-			const std::string collectionName =
-				config_get_string(App()->GetUserConfig(),
-						  "Basic", "SceneCollection");
-
-			SetupNewSceneCollection(collectionName);
-		}
-
+		Load(savePath);
 		disableSaving++;
 	}
 
@@ -2502,6 +2500,7 @@ void OBSBasic::OBSInit()
 					  Qt::QueuedConnection,
 					  Q_ARG(bool, true));
 
+	RefreshSceneCollections();
 	disableSaving--;
 
 	auto addDisplay = [this](OBSQTDisplay *window) {
@@ -3412,14 +3411,26 @@ void OBSBasic::SaveProjectDeferred()
 
 	projectChanged = false;
 
-	try {
-		const OBSSceneCollection &currentCollection =
-			GetCurrentSceneCollection();
+	const char *sceneCollection = config_get_string(
+		App()->GlobalConfig(), "Basic", "SceneCollectionFile");
 
-		Save(currentCollection.collectionFile.u8string().c_str());
-	} catch (const std::invalid_argument &error) {
-		blog(LOG_ERROR, "%s", error.what());
-	}
+	char savePath[1024];
+	char fileName[1024];
+	int ret;
+
+	if (!sceneCollection)
+		return;
+
+	ret = snprintf(fileName, sizeof(fileName),
+		       "obs-studio/basic/scenes/%s.json", sceneCollection);
+	if (ret <= 0)
+		return;
+
+	ret = GetConfigPath(savePath, sizeof(savePath), fileName);
+	if (ret <= 0)
+		return;
+
+	Save(savePath);
 }
 
 OBSSource OBSBasic::GetProgramSource()

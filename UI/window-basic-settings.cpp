@@ -2136,16 +2136,12 @@ OBSBasicSettings::CreateEncoderPropertyView(const char *encoder,
 	OBSPropertiesView *view;
 
 	if (path) {
-		const OBSBasic *basic =
-			reinterpret_cast<OBSBasic *>(App()->GetMainWindow());
-		const OBSProfile &currentProfile = basic->GetCurrentProfile();
-
-		const std::filesystem::path jsonFilePath =
-			currentProfile.path / std::filesystem::u8path(path);
-
-		if (!jsonFilePath.empty()) {
+		char encoderJsonPath[512];
+		int ret = GetProfilePath(encoderJsonPath,
+					 sizeof(encoderJsonPath), path);
+		if (ret > 0) {
 			obs_data_t *data = obs_data_create_from_json_file_safe(
-				jsonFilePath.u8string().c_str(), "bak");
+				encoderJsonPath, "bak");
 			obs_data_apply(settings, data);
 			obs_data_release(data);
 		}
@@ -3752,22 +3748,17 @@ static inline const char *SplitFileTypeFromIdx(int idx)
 
 static void WriteJsonData(OBSPropertiesView *view, const char *path)
 {
+	char full_path[512];
+
 	if (!view || !WidgetChanged(view))
 		return;
 
-	const OBSBasic *basic =
-		reinterpret_cast<OBSBasic *>(App()->GetMainWindow());
-	const OBSProfile &currentProfile = basic->GetCurrentProfile();
-
-	const std::filesystem::path jsonFilePath =
-		currentProfile.path / std::filesystem::u8path(path);
-
-	if (!jsonFilePath.empty()) {
+	int ret = GetProfilePath(full_path, sizeof(full_path), path);
+	if (ret > 0) {
 		obs_data_t *settings = view->GetSettings();
 		if (settings) {
-			obs_data_save_json_safe(settings,
-						jsonFilePath.u8string().c_str(),
-						"tmp", "bak");
+			obs_data_save_json_safe(settings, full_path, "tmp",
+						"bak");
 		}
 	}
 }
@@ -5700,16 +5691,14 @@ void OBSBasicSettings::AdvReplayBufferChanged()
 		if (!settings)
 			return;
 
-		const OBSProfile &currentProfile = main->GetCurrentProfile();
-
-		const std::filesystem::path jsonFilePath =
-			currentProfile.path /
-			std::filesystem::u8path("recordEncoder.json");
-
-		if (!jsonFilePath.empty()) {
+		char encoderJsonPath[512];
+		int ret = GetProfilePath(encoderJsonPath,
+					 sizeof(encoderJsonPath),
+					 "recordEncoder.json");
+		if (ret > 0) {
 			OBSDataAutoRelease data =
 				obs_data_create_from_json_file_safe(
-					jsonFilePath.u8string().c_str(), "bak");
+					encoderJsonPath, "bak");
 			obs_data_apply(settings, data);
 		}
 	}

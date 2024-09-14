@@ -609,41 +609,109 @@ static bool MakeUserDirs()
 	return true;
 }
 
-constexpr std::string_view OBSProfileSubDirectory = "obs-studio/basic/profiles";
-constexpr std::string_view OBSScenesSubDirectory = "obs-studio/basic/scenes";
-
 static bool MakeUserProfileDirs()
 {
-	const std::filesystem::path userProfilePath =
-		App()->userProfilesLocation /
-		std::filesystem::u8path(OBSProfileSubDirectory);
-	const std::filesystem::path userScenesPath =
-		App()->userScenesLocation /
-		std::filesystem::u8path(OBSScenesSubDirectory);
+	char path[512];
 
-	if (!std::filesystem::exists(userProfilePath)) {
-		try {
-			std::filesystem::create_directories(userProfilePath);
-		} catch (const std::filesystem::filesystem_error &error) {
-			blog(LOG_ERROR,
-			     "Failed to create user profile directory '%s'\n%s",
-			     userProfilePath.u8string().c_str(), error.what());
-			return false;
-		}
-	}
+	if (GetConfigPath(path, sizeof(path), "obs-studio/basic/profiles") <= 0)
+		return false;
+	if (!do_mkdir(path))
+		return false;
 
-	if (!std::filesystem::exists(userScenesPath)) {
-		try {
-			std::filesystem::create_directories(userScenesPath);
-		} catch (const std::filesystem::filesystem_error &error) {
-			blog(LOG_ERROR,
-			     "Failed to create user scene collection directory '%s'\n%s",
-			     userScenesPath.u8string().c_str(), error.what());
-			return false;
-		}
-	}
+	if (GetConfigPath(path, sizeof(path), "obs-studio/basic/scenes") <= 0)
+		return false;
+	if (!do_mkdir(path))
+		return false;
 
 	return true;
+}
+
+static string GetProfileDirFromName(const char *name)
+{
+	string outputPath;
+	os_glob_t *glob;
+	char path[512];
+
+	if (GetConfigPath(path, sizeof(path), "obs-studio/basic/profiles") <= 0)
+		return outputPath;
+
+	strcat(path, "/*");
+
+	if (os_glob(path, 0, &glob) != 0)
+		return outputPath;
+
+	for (size_t i = 0; i < glob->gl_pathc; i++) {
+		struct os_globent ent = glob->gl_pathv[i];
+		if (!ent.directory)
+			continue;
+
+		strcpy(path, ent.path);
+		strcat(path, "/basic.ini");
+
+		ConfigFile config;
+		if (config.Open(path, CONFIG_OPEN_EXISTING) != 0)
+			continue;
+
+		const char *curName =
+			config_get_string(config, "General", "Name");
+		if (astrcmpi(curName, name) == 0) {
+			outputPath = ent.path;
+			break;
+		}
+	}
+
+	os_globfree(glob);
+
+	if (!outputPath.empty()) {
+		replace(outputPath.begin(), outputPath.end(), '\\', '/');
+		const char *start = strrchr(outputPath.c_str(), '/');
+		if (start)
+			outputPath.erase(0, start - outputPath.c_str() + 1);
+	}
+
+	return outputPath;
+}
+
+static string GetSceneCollectionFileFromName(const char *name)
+{
+	string outputPath;
+	os_glob_t *glob;
+	char path[512];
+
+	if (GetConfigPath(path, sizeof(path), "obs-studio/basic/scenes") <= 0)
+		return outputPath;
+
+	strcat(path, "/*.json");
+
+	if (os_glob(path, 0, &glob) != 0)
+		return outputPath;
+
+	for (size_t i = 0; i < glob->gl_pathc; i++) {
+		struct os_globent ent = glob->gl_pathv[i];
+		if (ent.directory)
+			continue;
+
+		OBSDataAutoRelease data =
+			obs_data_create_from_json_file_safe(ent.path, "bak");
+		const char *curName = obs_data_get_string(data, "name");
+
+		if (astrcmpi(name, curName) == 0) {
+			outputPath = ent.path;
+			break;
+		}
+	}
+
+	os_globfree(glob);
+
+	if (!outputPath.empty()) {
+		outputPath.resize(outputPath.size() - 5);
+		replace(outputPath.begin(), outputPath.end(), '\\', '/');
+		const char *start = strrchr(outputPath.c_str(), '/');
+		if (start)
+			outputPath.erase(0, start - outputPath.c_str() + 1);
+	}
+
+	return outputPath;
 }
 
 bool OBSApp::UpdatePre22MultiviewLayout(const char *layout)
@@ -1144,77 +1212,56 @@ OBSApp::~OBSApp()
 static void move_basic_to_profiles(void)
 {
 	char path[512];
+	char new_path[512];
+	os_glob_t *glob;
 
-	if (GetAppConfigPath(path, 512, "obs-studio/basic") <= 0) {
+	/* if not first time use */
+	if (GetConfigPath(path, 512, "obs-studio/basic") <= 0)
 		return;
-	}
-
-	const std::filesystem::path basicPath = std::filesystem::u8path(path);
-
-	if (!std::filesystem::exists(basicPath)) {
+	if (!os_file_exists(path))
 		return;
-	}
 
-	const std::filesystem::path profilesPath =
-		App()->userProfilesLocation /
-		std::filesystem::u8path("obs-studio/basic/profiles");
-
-	if (std::filesystem::exists(profilesPath)) {
+	/* if the profiles directory doesn't already exist */
+	if (GetConfigPath(new_path, 512, "obs-studio/basic/profiles") <= 0)
 		return;
-	}
-
-	try {
-		std::filesystem::create_directories(profilesPath);
-	} catch (const std::filesystem::filesystem_error &error) {
-		blog(LOG_ERROR,
-		     "Failed to create profiles directory for migration from basic profile\n%s",
-		     error.what());
+	if (os_file_exists(new_path))
 		return;
-	}
 
-	const std::filesystem::path newProfilePath =
-		profilesPath / std::filesystem::u8path(Str("Untitled"));
+	if (os_mkdir(new_path) == MKDIR_ERROR)
+		return;
 
-	for (auto &entry : std::filesystem::directory_iterator(basicPath)) {
-		if (entry.is_directory()) {
+	strcat(new_path, "/");
+	strcat(new_path, Str("Untitled"));
+	if (os_mkdir(new_path) == MKDIR_ERROR)
+		return;
+
+	strcat(path, "/*.*");
+	if (os_glob(path, 0, &glob) != 0)
+		return;
+
+	strcpy(path, new_path);
+
+	for (size_t i = 0; i < glob->gl_pathc; i++) {
+		struct os_globent ent = glob->gl_pathv[i];
+		char *file;
+
+		if (ent.directory)
 			continue;
-		}
 
-		if (entry.path().filename().u8string() == "scenes.json") {
+		file = strrchr(ent.path, '/');
+		if (!file++)
 			continue;
-		}
 
-		if (!std::filesystem::exists(newProfilePath)) {
-			try {
-				std::filesystem::create_directory(
-					newProfilePath);
-			} catch (
-				const std::filesystem::filesystem_error &error) {
-				blog(LOG_ERROR,
-				     "Failed to create profile directory for 'Untitled'\n%s",
-				     error.what());
-				return;
-			}
-		}
+		if (astrcmpi(file, "scenes.json") == 0)
+			continue;
 
-		const filesystem::path destinationFile =
-			newProfilePath / entry.path().filename();
-
-		const auto copyOptions =
-			std::filesystem::copy_options::overwrite_existing;
-
-		try {
-			std::filesystem::copy(entry.path(), destinationFile,
-					      copyOptions);
-		} catch (const std::filesystem::filesystem_error &error) {
-			blog(LOG_ERROR,
-			     "Failed to copy basic profile file '%s' to new profile 'Untitled'\n%s",
-			     entry.path().filename().u8string().c_str(),
-			     error.what());
-
-			return;
-		}
+		strcpy(new_path, path);
+		strcat(new_path, "/");
+		strcat(new_path, file);
+		os_rename(ent.path, new_path);
 	}
+
+	os_globfree(glob);
 }
 
 static void move_basic_to_scene_collections(void)

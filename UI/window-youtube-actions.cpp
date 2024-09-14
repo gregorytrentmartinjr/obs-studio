@@ -287,8 +287,8 @@ OBSYoutubeActions::OBSYoutubeActions(QWidget *parent, Auth *auth,
 	workerThread->start();
 
 	OBSBasic *main = OBSBasic::Get();
-	bool rememberSettings = config_get_bool(main->activeConfiguration,
-						"YouTube", "RememberSettings");
+	bool rememberSettings = config_get_bool(main->basicConfig, "YouTube",
+						"RememberSettings");
 	if (rememberSettings)
 		LoadSettings();
 
@@ -749,85 +749,83 @@ void OBSYoutubeActions::SaveSettings(BroadcastDescription &broadcast)
 {
 	OBSBasic *main = OBSBasic::Get();
 
-	config_set_string(main->activeConfiguration, "YouTube", "Title",
+	config_set_string(main->basicConfig, "YouTube", "Title",
 			  QT_TO_UTF8(broadcast.title));
-	config_set_string(main->activeConfiguration, "YouTube", "Description",
+	config_set_string(main->basicConfig, "YouTube", "Description",
 			  QT_TO_UTF8(broadcast.description));
-	config_set_string(main->activeConfiguration, "YouTube", "Privacy",
+	config_set_string(main->basicConfig, "YouTube", "Privacy",
 			  QT_TO_UTF8(broadcast.privacy));
-	config_set_string(main->activeConfiguration, "YouTube", "CategoryID",
+	config_set_string(main->basicConfig, "YouTube", "CategoryID",
 			  QT_TO_UTF8(broadcast.category.id));
-	config_set_string(main->activeConfiguration, "YouTube", "Latency",
+	config_set_string(main->basicConfig, "YouTube", "Latency",
 			  QT_TO_UTF8(broadcast.latency));
-	config_set_bool(main->activeConfiguration, "YouTube", "MadeForKids",
+	config_set_bool(main->basicConfig, "YouTube", "MadeForKids",
 			broadcast.made_for_kids);
-	config_set_bool(main->activeConfiguration, "YouTube", "AutoStart",
+	config_set_bool(main->basicConfig, "YouTube", "AutoStart",
 			broadcast.auto_start);
-	config_set_bool(main->activeConfiguration, "YouTube", "AutoStop",
+	config_set_bool(main->basicConfig, "YouTube", "AutoStop",
 			broadcast.auto_start);
-	config_set_bool(main->activeConfiguration, "YouTube", "DVR",
-			broadcast.dvr);
-	config_set_bool(main->activeConfiguration, "YouTube",
-			"ScheduleForLater", broadcast.schedul_for_later);
-	config_set_string(main->activeConfiguration, "YouTube", "Projection",
+	config_set_bool(main->basicConfig, "YouTube", "DVR", broadcast.dvr);
+	config_set_bool(main->basicConfig, "YouTube", "ScheduleForLater",
+			broadcast.schedul_for_later);
+	config_set_string(main->basicConfig, "YouTube", "Projection",
 			  QT_TO_UTF8(broadcast.projection));
-	config_set_string(main->activeConfiguration, "YouTube", "ThumbnailFile",
+	config_set_string(main->basicConfig, "YouTube", "ThumbnailFile",
 			  QT_TO_UTF8(thumbnailFile));
-	config_set_bool(main->activeConfiguration, "YouTube",
-			"RememberSettings", true);
+	config_set_bool(main->basicConfig, "YouTube", "RememberSettings", true);
 }
 
 void OBSYoutubeActions::LoadSettings()
 {
 	OBSBasic *main = OBSBasic::Get();
 
-	const char *title = config_get_string(main->activeConfiguration,
-					      "YouTube", "Title");
+	const char *title =
+		config_get_string(main->basicConfig, "YouTube", "Title");
 	ui->title->setText(QT_UTF8(title));
 
-	const char *desc = config_get_string(main->activeConfiguration,
-					     "YouTube", "Description");
+	const char *desc =
+		config_get_string(main->basicConfig, "YouTube", "Description");
 	ui->description->setPlainText(QT_UTF8(desc));
 
-	const char *priv = config_get_string(main->activeConfiguration,
-					     "YouTube", "Privacy");
+	const char *priv =
+		config_get_string(main->basicConfig, "YouTube", "Privacy");
 	int index = ui->privacyBox->findData(priv);
 	ui->privacyBox->setCurrentIndex(index);
 
-	const char *catID = config_get_string(main->activeConfiguration,
-					      "YouTube", "CategoryID");
+	const char *catID =
+		config_get_string(main->basicConfig, "YouTube", "CategoryID");
 	index = ui->categoryBox->findData(catID);
 	ui->categoryBox->setCurrentIndex(index);
 
-	const char *latency = config_get_string(main->activeConfiguration,
-						"YouTube", "Latency");
+	const char *latency =
+		config_get_string(main->basicConfig, "YouTube", "Latency");
 	index = ui->latencyBox->findData(latency);
 	ui->latencyBox->setCurrentIndex(index);
 
-	bool dvr = config_get_bool(main->activeConfiguration, "YouTube", "DVR");
+	bool dvr = config_get_bool(main->basicConfig, "YouTube", "DVR");
 	ui->checkDVR->setChecked(dvr);
 
-	bool forKids = config_get_bool(main->activeConfiguration, "YouTube",
-				       "MadeForKids");
+	bool forKids =
+		config_get_bool(main->basicConfig, "YouTube", "MadeForKids");
 	if (forKids)
 		ui->yesMakeForKids->setChecked(true);
 	else
 		ui->notMakeForKids->setChecked(true);
 
-	bool schedLater = config_get_bool(main->activeConfiguration, "YouTube",
+	bool schedLater = config_get_bool(main->basicConfig, "YouTube",
 					  "ScheduleForLater");
 	ui->checkScheduledLater->setChecked(schedLater);
 
-	bool autoStart = config_get_bool(main->activeConfiguration, "YouTube",
-					 "AutoStart");
+	bool autoStart =
+		config_get_bool(main->basicConfig, "YouTube", "AutoStart");
 	ui->checkAutoStart->setChecked(autoStart);
 
-	bool autoStop = config_get_bool(main->activeConfiguration, "YouTube",
-					"AutoStop");
+	bool autoStop =
+		config_get_bool(main->basicConfig, "YouTube", "AutoStop");
 	ui->checkAutoStop->setChecked(autoStop);
 
-	const char *projection = config_get_string(main->activeConfiguration,
-						   "YouTube", "Projection");
+	const char *projection =
+		config_get_string(main->basicConfig, "YouTube", "Projection");
 	if (projection && *projection) {
 		if (strcmp(projection, "360") == 0)
 			ui->check360Video->setChecked(true);
@@ -835,8 +833,8 @@ void OBSYoutubeActions::LoadSettings()
 			ui->check360Video->setChecked(false);
 	}
 
-	const char *thumbFile = config_get_string(main->activeConfiguration,
-						  "YouTube", "ThumbnailFile");
+	const char *thumbFile = config_get_string(main->basicConfig, "YouTube",
+						  "ThumbnailFile");
 	if (thumbFile && *thumbFile) {
 		QFileInfo tFile(thumbFile);
 		// Re-check validity before setting path again
